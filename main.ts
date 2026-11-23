@@ -32,8 +32,18 @@ function main() {
   if (written.includes('\n')) {
     throw new Error('entry.txt must be a single line');
   }
+  // Round-trip check: what landed on disk must be the line itself,
+  // byte for byte — no trailing space, no line ending, no re-encoding.
+  if (written !== line) {
+    throw new Error(
+      'entry.txt round-trip mismatch: read-back differs from the entry line'
+    );
+  }
 
-  console.log(`Wrote ${charCount} characters to ${destPath}`);
+  const lineCount = written.split('\n').length;
+  console.log(
+    `Wrote ${charCount} characters, ${lineCount} line, to ${destPath}`
+  );
   console.log(written);
 }
 
